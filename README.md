@@ -1,38 +1,28 @@
-# notion-sdk-typescript-starter
+# Cross Post Tool for Notion
 
-This is a template repository for getting started with the [Notion SDK](https://github.com/makenotion/notion-sdk-js)
-and [TypeScript](https://www.typescriptlang.org/).
+This tool allows posting from Notion to different platforms.
 
-To use this template, click the big green "Use this template" button in the upper-right corner. After some questions,
-GitHub will create a new clone under your account, and then you can get started customizing.
+## Platforms
 
-## Features
+[x] GitHub (Markdown)
+  [] frontmatter customization
+[] Dev.to
+[] Hashnode
+[] Medium
 
-- TypeScript for type checking.
-- [Prettier](https://prettier.io/) for code formatting.
-- A minimal GitHub Actions workflow that typechecks your code.
-- [Dotenv](https://www.npmjs.com/package/dotenv) for configuring your Notion API token.
-- [Dependabot](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuring-dependabot-version-updates)
-  for ensuring your (and this template's!) dependencies are up to date.
-- Our lovely Notion SDK!
+## Configurations
 
-## What to do after duplicating
+### Notion
 
-1. Make sure you've [created a Notion integration](https://developers.notion.com/docs/getting-started) and have a secret Notion token.
-2. Add your Notion token to a `.env` file at the root of this repository: `echo "NOTION_TOKEN=[your token here]" > .env`.
-3. Run `npm install`.
-4. Edit the `database_id` in `index.ts` from FIXME to be any database currently shared with your integration.
-5. Run `npm start` to run the script.
+- `NOTION_TOKEN`: Token on a Notion internal integration
 
-Now you can head over to our [developer documentation](https://developers.notion.com/) for more information on using the Notion API!
+### GitHub
 
-## NPM Scripts
-
-This template has a few built-in NPM scripts:
-
-| Script              | Action                                                                                                                                                                          |
-| - | - |
-| `npm start`         | Run `index.ts`.                                                                                                                                                                 |
-| `npm run typecheck` | Type check using the TypeScript compiler.                                                                                                                                       |
-| `npm run format`    | Format using Prettier (also recommended: the [Prettier VS Code extension](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) if you're using VS code.) |
-| `npm run build`     | Build JavaScript into the `dist/` directory. You normally shouldn't need this if you're using `npm start`.                                                                      |
+- `GH_TOKEN`: (required) GitHub personal token
+- `GH_OWNER`: (required) GitHub username
+- `GH_REPO`: (required) Repository name
+- `GH_BRANCH`: Branch name. default is `master`.
+- `GH_IMAGE_PATH`: Path to upload images to in the repository. Default will be the root.
+- `GH_IMAGE_PREFIX`: Prefix of images to use in the article. This is helpful if, for example, you host images in the `public` directory but on the website the images should be loaded from `/`. Default value is the same value as `GH_IMAGE_PATH`.
+- `GH_ARTICLE_PATH`: Path to upload the article to in the repository. Default will be the root.
+- `GH_TITLE_PROPERTY`: The Notion property to take the title from. Default will be the title of the notion document.

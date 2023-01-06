@@ -1,23 +1,14 @@
-import { Client } from "@notionhq/client";
-import dotenv from "dotenv";
+import dotenv from "dotenv"
+import post from "./commands/post"
+import { program } from 'commander'
 
-dotenv.config();
+dotenv.config()
 
-async function main() {
-  const notion = new Client({
-    auth: process.env.NOTION_TOKEN,
-  });
+program.usage('[command] [options]')
 
-  const response = await notion.databases.query({
-    database_id: "FIXME",
-  });
+program
+  .command('post <url>')
+  .description('Cross post article')
+  .action(post)
 
-  console.log("Got response:", response);
-}
-
-main()
-  .then(() => process.exit(0))
-  .catch((err) => {
-    console.error(err);
-    process.exit(1);
-  });
+program.parse()
