@@ -4,11 +4,11 @@ This tool allows posting from Notion to different platforms.
 
 ## Platforms
 
-[x] GitHub (Markdown)
-  [] frontmatter customization
-[] Dev.to
-[] Hashnode
-[] Medium
+- [x] GitHub (Markdown)
+  - [ ] frontmatter customization
+- [ ] Dev.to
+- [ ] Hashnode
+- [ ] Medium
 
 ## Configurations
 
