@@ -14,7 +14,7 @@
   "keywords": [],
   "author": "",
   "dependencies": {
-    "@notionhq/client": "^2.2.2",
+    "@notionhq/client": "^2.2.3",
     "dotenv": "^16.0.1"
   },
   "devDependencies": {
