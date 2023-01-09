@@ -21,7 +21,7 @@
     "inquirer": "^9.1.4",
     "nanoid": "^3.3.4",
     "notion-to-md": "^2.5.5",
-    "octokit": "^2.0.10",
+    "octokit": "^2.0.11",
     "slugify": "^1.6.5"
   },
   "devDependencies": {
