@@ -11,7 +11,9 @@ type GitHubOptions = {
   image_path?: string
   article_path?: string
   image_prefix?: string
-  title_property?: string
+  title_property: string
+  date_property: string
+  frontmatter: FrontmatterOptions
 }
 
 type File = {
@@ -24,6 +26,11 @@ type ImageDataUrl = {
   ext: string
 }
 
+export type FrontmatterOptions = {
+  title?: string
+  date?: string
+}
+
 const MARKDOWN_IMG_REGEX = /!\[[^\]]*\]\((.*?)\s*("(?:.*[^"])")?\s*\)/
 
 class GitHubClient {
@@ -31,7 +38,7 @@ class GitHubClient {
   options: GitHubOptions
   notion: Notion
 
-  constructor () {
+  constructor (frontmatterOptions?: FrontmatterOptions) {
     this.octokit = new Octokit({
       auth: process.env.GH_TOKEN
     })
@@ -42,12 +49,17 @@ class GitHubClient {
       image_path: process.env.GH_IMAGE_PATH,
       article_path: process.env.GH_ARTICLE_PATH,
       image_prefix: process.env.GH_IMAGE_PREFIX ?? process.env.GH_IMAGE_PATH,
-      title_property: process.env.GH_TITLE_PROPERTY
+      title_property: process.env.GH_TITLE_PROPERTY ?? "",
+      date_property: process.env.GH_DATE_PROPERTY ?? "",
+      frontmatter: {
+        title: frontmatterOptions?.title ?? "title",
+        date: frontmatterOptions?.date ?? "date"
+      }
     }
     this.notion = new Notion()
   }
 
-  async post(url: string) {
+  async post(url: string, addFrontmatter = false, additionalFrontmatter?: Record<string, any>) {
     //get page id
     const pageId = this.notion.getPageIdFromURL(url)
     //get blocks
@@ -75,14 +87,47 @@ class GitHubClient {
     }))
     
     //transform blocks to markdown
-    const markdown = await this.notion.getMarkdown(blocks)
+    let markdown = await this.notion.getMarkdown(blocks)
+    const properties = await this.notion.getArticleProperties(pageId)
+    const title = this.notion.getAttributeValue(properties[this.options.title_property])
 
-    //get slug of file
-    const slug = await this.notion.getArticleSlug(pageId, this.options.title_property)
+    //add frontmatter
+    let frontmatterStr = ''
+    if (addFrontmatter || additionalFrontmatter) {
+      frontmatterStr = '---\r\n'
+    }
+
+    if (additionalFrontmatter) {
+      for (const [key, value] of Object.entries(additionalFrontmatter)) {
+        frontmatterStr += `${key}: ${value}\r\n`
+      }
+    }
+
+    if (addFrontmatter) {
+      //add title
+      frontmatterStr += `${this.options.frontmatter.title}: ${title}\r\n`
+      //add date
+      if (this.options.date_property.length) {
+        frontmatterStr += `${this.options.frontmatter.date}: ${this.notion.getAttributeValue(properties[this.options.date_property])}\r\n`
+      } else {
+        //use current date
+        const today = new Date()
+        frontmatterStr += `${this.options.frontmatter.date}: ${today.getFullYear()}-${today.getMonth()}-${today.getDate()}\r\n`
+      }
+    }
+
+    if (addFrontmatter || additionalFrontmatter) {
+      frontmatterStr += '---\r\n'
+    }
+
+    markdown = frontmatterStr + markdown
+
+    // get slug of file
+    const slug = this.notion.getArticleSlug(title)
 
     //add markdown file to files
     files.push({
-      path: `${this.options.article_path}/${slug}.md`, //TODO replace with slug file name
+      path: `${this.options.article_path}/${slug}.md`,
       content: this.toBase64(markdown)
     })
 

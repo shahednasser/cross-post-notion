@@ -34,7 +34,7 @@ class Notion {
     return this.n2m.toMarkdownString(mdblocks);
   }
 
-  async getArticleSlug(page_id: string, key?: string): Promise<string> {
+  async getArticleProperties(page_id: string): Promise<Record<string, any>> {
     const response = await this.notion.pages.retrieve({
       page_id
     })
@@ -42,12 +42,24 @@ class Notion {
     //due to an issue in Notion's types we disable ts for this line
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const typeKey = key ? response.properties[key].type : 'title'
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const title = key ? response.properties[key][typeKey][0].plain_text : response.properties['Article name'].title.plain_text
+    return response.properties
+  }
 
+  getArticleSlug(title: string): string {
     return `${slugify(title)}-${nanoid(10)}`
+  }
+
+  getAttributeValue (attribute: Record<string, any>): string {
+    switch (attribute.type) {
+      case 'title':
+        return attribute.title.plain_text
+      case 'rich_text':
+        return attribute.rich_text[0]?.plain_text || ""
+      case 'date':
+        return attribute.date.start
+      default:
+        return ""
+    }
   }
 
   // Read more details in Notion's documentation:
