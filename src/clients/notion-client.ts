@@ -46,7 +46,7 @@ class Notion {
   }
 
   getArticleSlug(title: string): string {
-    return `${slugify(title)}-${nanoid(10)}`
+    return `${slugify(title)}`
   }
 
   getAttributeValue (attribute: Record<string, any>): string {
