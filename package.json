@@ -16,7 +16,7 @@
   "dependencies": {
     "@notionhq/client": "^2.2.2",
     "axios": "^1.2.2",
-    "commander": "^9.4.1",
+    "commander": "^9.5.0",
     "dotenv": "^16.0.1",
     "inquirer": "^9.1.4",
     "nanoid": "^4.0.0",
