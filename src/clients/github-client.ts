@@ -99,30 +99,28 @@ class GitHubClient {
 
     markdown = frontmatterStr + markdown
 
-    console.log(frontmatterStr)
-
     // get slug of file
-    // const slug = properties[this.options.properties?.slug || NotionProperties.SLUG] ? 
-    //   this.notion.getAttributeValue(properties[this.options.properties?.slug || NotionProperties.SLUG]) :
-    //   this.notion.getArticleSlug(title)
+    const slug = properties[this.options.properties?.slug || NotionProperties.SLUG] ? 
+      this.notion.getAttributeValue(properties[this.options.properties?.slug || NotionProperties.SLUG]) :
+      this.notion.getArticleSlug(title)
 
-    // //add markdown file to files
-    // files.push({
-    //   path: `${this.options.article_path}/${slug}.md`,
-    //   content: this.toBase64(markdown)
-    // })
+    //add markdown file to files
+    files.push({
+      path: `${this.options.article_path}/${slug}.md`,
+      content: this.toBase64(markdown)
+    })
 
-    // //commit files to GitHub
-    // for (const file of files) {
-    //   await this.octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
-    //     owner: this.connection_settings.owner,
-    //     repo: this.connection_settings.repo,
-    //     path: file.path,
-    //     content: file.content,
-    //     message: `Added ${file.path}`,
-    //     branch: this.connection_settings.branch
-    //   })
-    // }
+    //commit files to GitHub
+    for (const file of files) {
+      await this.octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
+        owner: this.connection_settings.owner,
+        repo: this.connection_settings.repo,
+        path: file.path,
+        content: file.content,
+        message: `Added ${file.path}`,
+        branch: this.connection_settings.branch
+      })
+    }
 
     console.log('Article pushed to GitHub')
   }
