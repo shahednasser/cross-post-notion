@@ -16,7 +16,10 @@
           "date": "date"
         },
         "extra_frontmatter": {
-          
+          "excerpt": "this is description"
+        },
+        "extra_frontmatter_mapper": {
+          "excerpt": "Description"
         }
       }
     }

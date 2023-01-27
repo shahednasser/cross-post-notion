@@ -70,22 +70,26 @@ class GitHubClient {
       frontmatterStr = '---\r\n'
     }
 
-    if (this.options.extra_frontmatter) {
-      for (const [key, value] of Object.entries(this.options.extra_frontmatter)) {
-        frontmatterStr += `${key}: ${value}\r\n`
-      }
-    }
-
     if (this.options.add_default_frontmatter) {
       //add title
       frontmatterStr += `${this.options.frontmatter_labels?.title || DefaultFrontmatter.TITLE}: '${title}'\r\n`
       //add date
       if (this.options.properties?.date) {
-        frontmatterStr += `${this.options.frontmatter_labels?.date || DefaultFrontmatter.DATE}: ${this.notion.getAttributeValue(properties[this.options.properties?.date])}\r\n`
+        frontmatterStr += `${this.options.frontmatter_labels?.date || DefaultFrontmatter.DATE}: '${this.notion.getAttributeValue(properties[this.options.properties?.date])}'\r\n`
       } else {
         //use current date
         const today = new Date()
-        frontmatterStr += `${this.options.frontmatter_labels?.date || DefaultFrontmatter.DATE}: ${today.getFullYear()}-${today.getMonth()}-${today.getDate()}\r\n`
+        frontmatterStr += `${this.options.frontmatter_labels?.date || DefaultFrontmatter.DATE}: '${today.getFullYear()}-${today.getMonth()}-${today.getDate()}'\r\n`
+      }
+    }
+
+    if (this.options.extra_frontmatter) {
+      for (const [key, value] of Object.entries(this.options.extra_frontmatter)) {
+        const frontmatterValue = (this.options.extra_frontmatter_mapper && this.options.extra_frontmatter_mapper[key] 
+          && properties[this.options.extra_frontmatter_mapper[key]]) ?
+          this.notion.getAttributeValue(properties[this.options.extra_frontmatter_mapper[key]]) || value :
+          value
+        frontmatterStr += `${key}: ${this.formatFrontmatterValue(frontmatterValue)}\r\n`
       }
     }
 
@@ -95,28 +99,30 @@ class GitHubClient {
 
     markdown = frontmatterStr + markdown
 
+    console.log(frontmatterStr)
+
     // get slug of file
-    const slug = properties[this.options.properties?.slug || NotionProperties.SLUG] ? 
-      this.notion.getAttributeValue(properties[this.options.properties?.slug || NotionProperties.SLUG]) :
-      this.notion.getArticleSlug(title)
+    // const slug = properties[this.options.properties?.slug || NotionProperties.SLUG] ? 
+    //   this.notion.getAttributeValue(properties[this.options.properties?.slug || NotionProperties.SLUG]) :
+    //   this.notion.getArticleSlug(title)
 
-    //add markdown file to files
-    files.push({
-      path: `${this.options.article_path}/${slug}.md`,
-      content: this.toBase64(markdown)
-    })
+    // //add markdown file to files
+    // files.push({
+    //   path: `${this.options.article_path}/${slug}.md`,
+    //   content: this.toBase64(markdown)
+    // })
 
-    //commit files to GitHub
-    for (const file of files) {
-      await this.octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
-        owner: this.connection_settings.owner,
-        repo: this.connection_settings.repo,
-        path: file.path,
-        content: file.content,
-        message: `Added ${file.path}`,
-        branch: this.connection_settings.branch
-      })
-    }
+    // //commit files to GitHub
+    // for (const file of files) {
+    //   await this.octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
+    //     owner: this.connection_settings.owner,
+    //     repo: this.connection_settings.repo,
+    //     path: file.path,
+    //     content: file.content,
+    //     message: `Added ${file.path}`,
+    //     branch: this.connection_settings.branch
+    //   })
+    // }
 
     console.log('Article pushed to GitHub')
   }
@@ -135,6 +141,15 @@ class GitHubClient {
 
   toBase64(source: string): string {
     return Buffer.from(source).toString('base64')
+  }
+
+  formatFrontmatterValue (value: any) {
+    switch (typeof value) {
+      case 'string':
+        return `'${value.replaceAll(/'/g, '')}'`
+      default:
+        return value
+    }
   }
 }
 

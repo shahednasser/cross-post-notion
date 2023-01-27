@@ -24,6 +24,7 @@ export type GitHubOptions = {
   add_default_frontmatter?: boolean
   frontmatter_labels?: Record<DefaultFrontmatter, string>
   extra_frontmatter?: Record<string, string>
+  extra_frontmatter_mapper?: Record<string, string>
 }
 
 export type File = {

@@ -55,17 +55,21 @@ The JSON configuration file can have the following fields:
         "image_path": "public",
         "image_prefix": "/",
         "article_path": "content",
-        "add_default_frontmatter": true,
         "properties": {
           "title": "Title for Blog",
-          "date": "Publishing Date"
+          "date": "Publishing Date",
+          "slug": "Slug"
         },
+        "add_default_frontmatter": true,
         "frontmatter_labels": {
           "title": "title",
           "date": "date"
         },
         "extra_frontmatter": {
-          
+          "excerpt": "this is description"
+        },
+        "extra_frontmatter_mapper": {
+          "excerpt": "Description"
         }
       }
     }
@@ -84,9 +88,11 @@ Where:
     - `add_default_frontmatter`: Whether to add default frontmatter to the markdown file. The default frontmatter are:
       - `title`
       - `date`
+      - `slug`
     - `properties`: A JSON object that allows you to override the name of the properties in Notion to pull the values of frontmatter fields.
     - `frontmatter_labels`: A JSON object that allows you to override the labels of the frontmatter fields.
     - `extra_frontmatter`: Allows you to add extra frontmatter to the output markdown.
+    - `extra_frontmatter_mapper`: If you want the values of the frontmatter keys in `extra_frontmatter` to be pulled out of Notion, you can map each key to a property name in the Notion document.
 
 ### Environment Variables when Loading Configurations from a Custom File
 
