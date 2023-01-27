@@ -1,65 +1,36 @@
+import { DefaultFrontmatter, File, GitHubConnectionSettings, GitHubOptions, ImageDataUrl, NotionProperties } from "../types/clients/github"
+
 import Notion from "./notion-client"
 import { Octokit } from "octokit"
 import axios from "axios"
 import imageTypes from "../utils/image-types"
 import { nanoid } from 'nanoid'
-
-type GitHubOptions = {
-  owner: string
-  repo: string
-  branch?: string
-  image_path?: string
-  article_path?: string
-  image_prefix?: string
-  title_property: string
-  date_property: string
-  frontmatter: FrontmatterOptions
-}
-
-type File = {
-  path: string
-  content: string
-}
-
-type ImageDataUrl = {
-  url: string
-  ext: string
-}
-
-export type FrontmatterOptions = {
-  title?: string
-  date?: string
-}
+import { ConfigGitHub, ConfigNotion } from '../types/config';
 
 const MARKDOWN_IMG_REGEX = /!\[[^\]]*\]\((.*?)\s*("(?:.*[^"])")?\s*\)/
 
 class GitHubClient {
   octokit: Octokit
+  connection_settings: GitHubConnectionSettings
   options: GitHubOptions
   notion: Notion
 
-  constructor (frontmatterOptions?: FrontmatterOptions) {
+  constructor (
+    config: ConfigGitHub,
+    notion_config: ConfigNotion
+  ) {
     this.octokit = new Octokit({
-      auth: process.env.GH_TOKEN
+      auth: config.connection_settings.token
     })
-    this.options = {
-      owner: process.env.GH_OWNER ?? "",
-      repo: process.env.GH_REPO ?? "",
-      branch: process.env.GH_BRANCH ?? "master",
-      image_path: process.env.GH_IMAGE_PATH,
-      article_path: process.env.GH_ARTICLE_PATH,
-      image_prefix: process.env.GH_IMAGE_PREFIX ?? process.env.GH_IMAGE_PATH,
-      title_property: process.env.GH_TITLE_PROPERTY ?? "",
-      date_property: process.env.GH_DATE_PROPERTY ?? "",
-      frontmatter: {
-        title: frontmatterOptions?.title ?? "title",
-        date: frontmatterOptions?.date ?? "date"
-      }
+    this.connection_settings = {
+      ...config.connection_settings,
+      branch: config.connection_settings.branch ?? "master"
     }
-    this.notion = new Notion()
+    this.options = config.options
+    this.notion = new Notion(notion_config)
   }
 
-  async post(url: string, addFrontmatter = false, additionalFrontmatter?: Record<string, any>) {
+  async post(url: string) {
     //get page id
     const pageId = this.notion.getPageIdFromURL(url)
     //get blocks
@@ -89,34 +60,34 @@ class GitHubClient {
     //transform blocks to markdown
     let markdown = await this.notion.getMarkdown(blocks)
     const properties = await this.notion.getArticleProperties(pageId)
-    const title = this.notion.getAttributeValue(properties[this.options.title_property])
+    const title = this.notion.getAttributeValue(properties[this.options.properties?.title || NotionProperties.TITLE])
 
     //add frontmatter
     let frontmatterStr = ''
-    if (addFrontmatter || additionalFrontmatter) {
+    if (this.options.add_default_frontmatter || this.options.extra_frontmatter) {
       frontmatterStr = '---\r\n'
     }
 
-    if (additionalFrontmatter) {
-      for (const [key, value] of Object.entries(additionalFrontmatter)) {
+    if (this.options.extra_frontmatter) {
+      for (const [key, value] of Object.entries(this.options.extra_frontmatter)) {
         frontmatterStr += `${key}: ${value}\r\n`
       }
     }
 
-    if (addFrontmatter) {
+    if (this.options.add_default_frontmatter) {
       //add title
-      frontmatterStr += `${this.options.frontmatter.title}: ${title}\r\n`
+      frontmatterStr += `${this.options.frontmatter_labels?.title || DefaultFrontmatter.TITLE}: ${title}\r\n`
       //add date
-      if (this.options.date_property.length) {
-        frontmatterStr += `${this.options.frontmatter.date}: ${this.notion.getAttributeValue(properties[this.options.date_property])}\r\n`
+      if (this.options.properties?.date) {
+        frontmatterStr += `${this.options.frontmatter_labels?.date || DefaultFrontmatter.DATE}: ${this.notion.getAttributeValue(properties[this.options.properties?.date])}\r\n`
       } else {
         //use current date
         const today = new Date()
-        frontmatterStr += `${this.options.frontmatter.date}: ${today.getFullYear()}-${today.getMonth()}-${today.getDate()}\r\n`
+        frontmatterStr += `${this.options.frontmatter_labels?.date || DefaultFrontmatter.DATE}: ${today.getFullYear()}-${today.getMonth()}-${today.getDate()}\r\n`
       }
     }
 
-    if (addFrontmatter || additionalFrontmatter) {
+    if (this.options.add_default_frontmatter || this.options.extra_frontmatter) {
       frontmatterStr += '---\r\n'
     }
 
@@ -134,12 +105,12 @@ class GitHubClient {
     //commit files to GitHub
     for (const file of files) {
       await this.octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
-        owner: this.options.owner,
-        repo: this.options.repo,
+        owner: this.connection_settings.owner,
+        repo: this.connection_settings.repo,
         path: file.path,
         content: file.content,
         message: `Added ${file.path}`,
-        branch: this.options.branch
+        branch: this.connection_settings.branch
       })
     }
 

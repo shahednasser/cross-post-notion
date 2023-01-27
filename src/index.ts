@@ -1,26 +1,31 @@
 import dotenv from "dotenv"
+import fs from "fs"
+
+//config must be loaded before importing
+//any file that imports `config`
+dotenv.config()
+
+import config from 'config';
 import post from "./commands/post"
 import { program } from 'commander'
 
-dotenv.config()
-
 program.usage('[command] [options]')
+  .option('-c, --config <path>', 'Path to a JSON config file. By default, config files are loaded from config/default.json')
+  .hook('preAction', (thisCommand, actionCommand) => {
+    const configOption = thisCommand.opts().config
+    let fullConfig
+    if (configOption) {
+      fullConfig = JSON.parse(fs.readFileSync(configOption).toString()).config
+    } else {
+      fullConfig = config.get('config')
+    }
+
+    actionCommand.setOptionValue('config', fullConfig)
+  });
 
 program
   .command('post <url>')
   .description('Cross post article')
-  .option('--addFrontmatter', 'An option indicating if frontmatter attributes like title and date should automatically be added')
-  .option(
-    '--frontmatterTitle <title>',
-    'The name of the title property used in the generated frontmatter. This is only applied when `--addFrontmatter` is used.',
-    'title'
-  )
-  .option(
-    '--frontmatterDate <date>', 
-    'The name of the date property used in the generated frontmatter. This is only applied when `--addFrontmatter` is used.',
-    'date'
-  )
-  .option('--frontmatter <value>', 'A JSON object with key-value pairs of frontmatter attributes to add to GitHub file')
   .action(post)
 
 program.parse()

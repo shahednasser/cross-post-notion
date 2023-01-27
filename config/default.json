@@ -1,0 +1,23 @@
+{
+  "config": {
+    "github": {
+      "options": {
+        "image_path": "public",
+        "image_prefix": "/",
+        "article_path": "content",
+        "properties": {
+          "title": "Title for Blog",
+          "date": "Publishing Date"
+        },
+        "add_default_frontmatter": true,
+        "frontmatter_labels": {
+          "title": "title",
+          "date": "date"
+        },
+        "extra_frontmatter": {
+          
+        }
+      }
+    }
+  }
+}

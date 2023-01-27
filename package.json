@@ -17,6 +17,7 @@
     "@notionhq/client": "^2.2.2",
     "axios": "^1.2.2",
     "commander": "^10.0.0",
+    "config": "^3.3.9",
     "dotenv": "^16.0.1",
     "inquirer": "^9.1.4",
     "nanoid": "^4.0.0",
@@ -25,6 +26,7 @@
     "slugify": "^1.6.5"
   },
   "devDependencies": {
+    "@types/config": "^3.3.0",
     "@types/dotenv": "^8.2.0",
     "@types/node": "^18.0.3",
     "@typescript-eslint/eslint-plugin": "^5.49.0",

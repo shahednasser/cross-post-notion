@@ -1,16 +1,16 @@
 import { Client } from "@notionhq/client";
 import { MdBlock } from "notion-to-md/build/types";
 import { NotionToMarkdown } from "notion-to-md";
-import { nanoid } from 'nanoid'
 import slugify from "slugify";
+import { ConfigNotion } from "../types/config";
 
 class Notion {
   notion: Client;
   n2m: NotionToMarkdown;
   
-  constructor () {
+  constructor (config: ConfigNotion) {
     this.notion = new Client({
-      auth: process.env.NOTION_TOKEN,
+      auth: config.connection_settings.token,
     });
     this.n2m = new NotionToMarkdown({
       notionClient: this.notion

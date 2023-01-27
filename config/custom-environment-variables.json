@@ -1,0 +1,17 @@
+{
+  "config": {
+    "notion": {
+      "connection_settings": {
+        "token": "NOTION_TOKEN"
+      }
+    },
+    "github": {
+      "connection_settings": {
+        "token": "GH_TOKEN",
+        "owner": "GH_OWNER",
+        "repo": "GH_REPO",
+        "branch": "GH_BRANCH"
+      }
+    }
+  }
+}
