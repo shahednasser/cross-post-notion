@@ -47,6 +47,7 @@ class Notion {
 
   getArticleSlug(title: string): string {
     return `${encodeURI(slugify(title.toLowerCase()))}`
+    return `${slugify(title.toLowerCase())}`
   }
 
   getAttributeValue (attribute: Record<string, any>): string {
