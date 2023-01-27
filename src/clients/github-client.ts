@@ -28,6 +28,8 @@ class GitHubClient {
     }
     this.options = config.options
     this.notion = new Notion(notion_config)
+
+    // console.log(this.options, this.connection_settings)
   }
 
   async post(url: string) {
@@ -76,7 +78,7 @@ class GitHubClient {
 
     if (this.options.add_default_frontmatter) {
       //add title
-      frontmatterStr += `${this.options.frontmatter_labels?.title || DefaultFrontmatter.TITLE}: ${title}\r\n`
+      frontmatterStr += `${this.options.frontmatter_labels?.title || DefaultFrontmatter.TITLE}: '${title}'\r\n`
       //add date
       if (this.options.properties?.date) {
         frontmatterStr += `${this.options.frontmatter_labels?.date || DefaultFrontmatter.DATE}: ${this.notion.getAttributeValue(properties[this.options.properties?.date])}\r\n`
@@ -94,7 +96,9 @@ class GitHubClient {
     markdown = frontmatterStr + markdown
 
     // get slug of file
-    const slug = this.notion.getArticleSlug(title)
+    const slug = properties[this.options.properties?.slug || NotionProperties.SLUG] ? 
+      this.notion.getAttributeValue(properties[this.options.properties?.slug || NotionProperties.SLUG]) :
+      this.notion.getArticleSlug(title)
 
     //add markdown file to files
     files.push({

@@ -1,6 +1,7 @@
 export enum NotionProperties {
   TITLE = 'title',
-  DATE = 'date'
+  DATE = 'date',
+  SLUG = 'slug'
 }
 
 export enum DefaultFrontmatter {
