@@ -9,7 +9,8 @@
     "typecheck": "tsc --noEmit",
     "build": "tsc",
     "format": "prettier --write src/**/*.ts",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "production:start": "NODE_APP_INSTANCE=2 npm run start"
   },
   "keywords": [],
   "author": "",

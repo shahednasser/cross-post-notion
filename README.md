@@ -6,7 +6,7 @@ This tool allows posting from Notion to different platforms.
 
 - [x] GitHub (Markdown)
   - [x] frontmatter customization
-- [ ] Dev.to
+- [x] Dev.to
 - [ ] Hashnode
 - [ ] Medium
 
@@ -22,6 +22,11 @@ This tool allows posting from Notion to different platforms.
 - `GH_OWNER`: (required) GitHub username
 - `GH_REPO`: (required) Repository name
 - `GH_BRANCH`: Branch name. default is `master`.
+
+### Dev.to
+
+- `DEVTO_API_KEY`: (required) Your personal dev.to API key. Learn how to retrieve it [here](https://developers.forem.com/api/v0).
+- `DEVTO_ORG_ID`: The organization to publish the article under. You can retrieve it either from the organization dashboard page, where the ID is the last part of the URL (`https://dev.to/dashboard/organization/ORG_ID`). Alternatively, you can use Dev.to's [List Organizations](https://developers.forem.com/api/v0#tag/organizations/operation/getOrgUsers) endpoint to find the ID.
 
 ## Usage
 
@@ -50,6 +55,13 @@ The JSON configuration file can have the following fields:
 ```json
 {
   "config": {
+    "notion": {
+      "options": {
+        "skip_block_types": [
+        
+        ]
+      }
+    },
     "github": {
       "options": {
         "image_path": "public",
@@ -70,6 +82,14 @@ The JSON configuration file can have the following fields:
         },
         "extra_frontmatter_mapper": {
           "excerpt": "Description"
+        }
+      }
+    },
+    "devto": {
+      "options": {
+        "should_publish": false,
+        "properties": {
+          "title": "Title for Dev.to",
         }
       }
     }
@@ -93,6 +113,16 @@ Where:
     - `frontmatter_labels`: A JSON object that allows you to override the labels of the frontmatter fields.
     - `extra_frontmatter`: Allows you to add extra frontmatter to the output markdown.
     - `extra_frontmatter_mapper`: If you want the values of the frontmatter keys in `extra_frontmatter` to be pulled out of Notion, you can map each key to a property name in the Notion document.
+- `devto`: A JSON object with all configurations related to Dev.to. These are:
+  - `should_publish`: A boolean value indicating whether the article should be created in dev.to as a draft or it should be published.
+  - `properties`: A JSON object that allows you to override the name of the properties in Notion to pull the values of frontmatter fields. You can set the following properties:
+    - `title`
+    - `date`
+    - `description`
+    - `tags`
+    - `series`
+    - `canonical_url`
+    - `description`
 
 ### Environment Variables when Loading Configurations from a Custom File
 
@@ -114,7 +144,20 @@ When you're loading configurations from a custom file using the `-c, --config` o
         "repo": "...",
         "branch": "..."
       }
+    },
+    "devto": {
+      //...
+      "connection_settings": {
+        "api_key": "...",
+        "organization_id": "..."
+      }
     }
   }
 }
 ```
+
+## Limitations
+
+### Dev.to
+
+- As Dev.to does not expose an endpoint to upload images, it's not possible to upload images in the article. You'll have to upload them manually from Dev.to's interface.

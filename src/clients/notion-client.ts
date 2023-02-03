@@ -1,3 +1,4 @@
+import { NotionOptions } from './../types/clients/notion';
 import { Client } from "@notionhq/client";
 import { MdBlock } from "notion-to-md/build/types";
 import { NotionToMarkdown } from "notion-to-md";
@@ -7,6 +8,7 @@ import { ConfigNotion } from "../types/config";
 class Notion {
   notion: Client;
   n2m: NotionToMarkdown;
+  options: NotionOptions;
   
   constructor (config: ConfigNotion) {
     this.notion = new Client({
@@ -15,11 +17,14 @@ class Notion {
     this.n2m = new NotionToMarkdown({
       notionClient: this.notion
     })
+    this.options = config.options
   }
 
   async getBlocks (url: string): Promise<MdBlock[]> {
     const pageId = this.getPageIdFromURL(url)
-    return this.n2m.pageToMarkdown(pageId);
+    const blocks = await this.n2m.pageToMarkdown(pageId);
+
+    return blocks.filter((block) => !this.shouldSkipBlock(block.type))
   }
 
   async getMarkdown (source: string | MdBlock[]): Promise<string> {
@@ -51,13 +56,13 @@ class Notion {
   }
 
   getAttributeValue (attribute: Record<string, any>): string {
-    switch (attribute.type) {
+    switch (attribute?.type) {
       case 'title':
-        return attribute.title.plain_text
+        return attribute.title?.plain_text
       case 'rich_text':
         return attribute.rich_text[0]?.plain_text || ""
       case 'date':
-        return attribute.date.start
+        return attribute.date?.start || ""
       default:
         return ""
     }
@@ -76,6 +81,10 @@ class Notion {
     return `${unformattedId.substring(0, 8)}-${unformattedId.substring(8, 12)}-` + 
     `${unformattedId.substring(12, 16)}-${unformattedId.substring(16, 20)}-` +
     `${unformattedId.substring(20)}`
+  }
+
+  shouldSkipBlock (type?: string): boolean {
+    return (type && this.options.skip_block_types?.includes(type)) || false
   }
 }
 

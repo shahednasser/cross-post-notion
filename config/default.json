@@ -1,5 +1,12 @@
 {
   "config": {
+    "notion": {
+      "options": {
+        "skip_block_types": [
+        
+        ]
+      }
+    },
     "github": {
       "options": {
         "image_path": "public",
@@ -20,6 +27,14 @@
         },
         "extra_frontmatter_mapper": {
           "excerpt": "Description"
+        }
+      }
+    },
+    "devto": {
+      "options": {
+        "should_publish": false,
+        "properties": {
+          
         }
       }
     }

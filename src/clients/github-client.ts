@@ -1,4 +1,4 @@
-import { DefaultFrontmatter, File, GitHubConnectionSettings, GitHubOptions, ImageDataUrl, NotionProperties } from "../types/clients/github"
+import { DefaultFrontmatter, File, GitHubConnectionSettings, GitHubOptions, ImageDataUrl, GitHubProperties } from "../types/clients/github"
 
 import Notion from "./notion-client"
 import { Octokit } from "octokit"
@@ -46,13 +46,15 @@ class GitHubClient {
         const imageUrl = block.parent.match(MARKDOWN_IMG_REGEX)
         if (imageUrl?.length && imageUrl.length > 1) {
           const imageDataUrl = await this.imageToDataUrl(imageUrl[1])
-          const filename = `${nanoid(10)}.${imageDataUrl.ext}`
-          files.push({
-            path: `${this.options.image_path}/${filename}`,
-            content: imageDataUrl.url
-          })
+          if (imageDataUrl) {
+            const filename = `${nanoid(10)}.${imageDataUrl.ext}`
+            files.push({
+              path: `${this.options.image_path}/${filename}`,
+              content: imageDataUrl.url
+            })
 
-          block.parent = block.parent.replace(imageUrl[1], `${this.options.image_prefix}/${filename}`)
+            block.parent = block.parent.replace(imageUrl[1], `${this.options.image_prefix}/${filename}`)
+          }
         }
       }
 
@@ -62,7 +64,7 @@ class GitHubClient {
     //transform blocks to markdown
     let markdown = await this.notion.getMarkdown(blocks)
     const properties = await this.notion.getArticleProperties(pageId)
-    const title = this.notion.getAttributeValue(properties[this.options.properties?.title || NotionProperties.TITLE])
+    const title = this.notion.getAttributeValue(properties[this.options.properties?.title || GitHubProperties.TITLE])
 
     //add frontmatter
     let frontmatterStr = ''
@@ -100,9 +102,20 @@ class GitHubClient {
     markdown = frontmatterStr + markdown
 
     // get slug of file
-    const slug = properties[this.options.properties?.slug || NotionProperties.SLUG] ? 
-      this.notion.getAttributeValue(properties[this.options.properties?.slug || NotionProperties.SLUG]) :
-      this.notion.getArticleSlug(title)
+    let slug
+    if (properties[this.options.properties?.slug || GitHubProperties.SLUG]) {
+      slug = this.notion.getAttributeValue(properties[this.options.properties?.slug || GitHubProperties.SLUG])
+
+      if (!slug) {
+        slug = this.notion.getArticleSlug(title)
+      }
+    } else {
+      slug = this.notion.getArticleSlug(title)
+    }
+
+    while (slug.startsWith('/')) {
+      slug = slug.substring(1)
+    }
 
     //add markdown file to files
     files.push({
@@ -125,12 +138,18 @@ class GitHubClient {
     console.log('Article pushed to GitHub')
   }
 
-  async imageToDataUrl (url: string): Promise<ImageDataUrl> {
+  async imageToDataUrl (url: string): Promise<ImageDataUrl | null> {
     const imageDataUrl = await axios.get(url, {
       responseType: 'arraybuffer'
     })
     const stringifiedBuffer = this.toBase64(imageDataUrl.data)
     const contentType = imageDataUrl.headers['content-type']
+    
+    if (!contentType) {
+      console.error('Could not retrieve image. Skipping...')
+      return null
+    }
+
     return {
       url: stringifiedBuffer,
       ext: contentType ? imageTypes[contentType] || "" : ""

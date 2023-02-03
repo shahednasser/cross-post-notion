@@ -12,6 +12,12 @@
         "repo": "GH_REPO",
         "branch": "GH_BRANCH"
       }
+    },
+    "devto": {
+      "connection_settings": {
+        "api_key": "DEVTO_API_KEY",
+        "organization_id": "DEVTO_ORG_ID"
+      }
     }
   }
 }
