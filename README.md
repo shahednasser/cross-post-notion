@@ -7,7 +7,7 @@ This tool allows posting from Notion to different platforms.
 - [x] GitHub (Markdown)
   - [x] frontmatter customization
 - [x] Dev.to
-- [ ] Hashnode
+- [x] Hashnode
 - [ ] Medium
 
 ## Environment Variables
@@ -26,7 +26,12 @@ This tool allows posting from Notion to different platforms.
 ### Dev.to
 
 - `DEVTO_API_KEY`: (required) Your personal dev.to API key. Learn how to retrieve it [here](https://developers.forem.com/api/v0).
-- `DEVTO_ORG_ID`: The organization to publish the article under. You can retrieve it either from the organization dashboard page, where the ID is the last part of the URL (`https://dev.to/dashboard/organization/ORG_ID`). Alternatively, you can use Dev.to's [List Organizations](https://developers.forem.com/api/v0#tag/organizations/operation/getOrgUsers) endpoint to find the ID.
+- `DEVTO_ORG_ID`: The ID of the organization to publish the article under. You can retrieve it either from the organization dashboard page, where the ID is the last part of the URL (`https://dev.to/dashboard/organization/ORG_ID`). Alternatively, you can use Dev.to's [List Organizations](https://developers.forem.com/api/v0#tag/organizations/operation/getOrgUsers) endpoint to find the ID.
+
+### Hashnode
+
+- `HASHNODE_TOKEN`: (required) Hashnode personal token
+- `HASHNODE_PUB_ID`: The ID of the publication to publish the article under. You can retrieve it either from the publication's dashboard page, where the ID is the  second part of the URL (`https://hashnode.com/PUB_ID/dashboard`).
 
 ## Usage
 
