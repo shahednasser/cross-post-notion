@@ -18,6 +18,12 @@
         "api_key": "DEVTO_API_KEY",
         "organization_id": "DEVTO_ORG_ID"
       }
+    },
+    "hashnode": {
+      "connection_settings": {
+        "token": "HASHNODE_TOKEN",
+        "publication_id": "HASHNODE_PUB_ID"
+      }
     }
   }
 }

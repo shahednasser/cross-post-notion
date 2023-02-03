@@ -1,3 +1,4 @@
+import { HashnodeConnectionSettings, HashnodeOptions } from './clients/hashnode';
 import { NotionConnectionSettings, NotionOptions } from './clients/notion';
 import { GitHubConnectionSettings, GitHubOptions } from "./clients/github"
 import { DevToConnectionSettings, DevToOptions } from './clients/devto';
@@ -17,10 +18,16 @@ export type ConfigDevTo = {
   options: DevToOptions
 }
 
+export type ConfigHashnode = {
+  connection_settings: HashnodeConnectionSettings,
+  options: HashnodeOptions
+}
+
 type Config = {
   github: ConfigGitHub,
   notion: ConfigNotion,
-  devto: ConfigDevTo
+  devto: ConfigDevTo,
+  hashnode: ConfigHashnode
 }
 
 export default Config

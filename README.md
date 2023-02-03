@@ -89,7 +89,15 @@ The JSON configuration file can have the following fields:
       "options": {
         "should_publish": false,
         "properties": {
-          "title": "Title for Dev.to",
+          "title": "Title for Dev.to"
+        }
+      }
+    },
+    "hashnode": {
+      "options": {
+        "should_hide": true,
+        "properties": {
+          "title": "Title for Hashnode"
         }
       }
     }
@@ -119,10 +127,17 @@ Where:
     - `title`
     - `date`
     - `description`
-    - `tags`
-    - `series`
+    - `tags` (the property's value in Notion can either be a space separated list or a comma separated list. Each tag should start with `#`.)
+    - `series` (the property's value in Notion should be the name of the series)
     - `canonical_url`
     - `description`
+- `hashnode`: A JSON object with all the configurations related to Hashnode. These are:
+  - `should_hide`: A boolean value indicating whether the post should be shown on Hashnode's public feed or not. Learn more in the [limitations section](#hashnode-limitations).
+  - `properties`: A JSON object that allows you to override the name of the properties in Notion to pull the values of frontmatter fields. You can set the following properties:
+    - `title`
+    - `original_article_url` (refers to the property holding the canonical url of the article)
+    - `tags` (the property's value in Notion should be a list of tag names separated by a comma. The tag name can either be tag slug or display name)
+    - `subtitle`
 
 ### Environment Variables when Loading Configurations from a Custom File
 
@@ -158,6 +173,15 @@ When you're loading configurations from a custom file using the `-c, --config` o
 
 ## Limitations
 
-### Dev.to
+### GitHub Limitations
 
-- As Dev.to does not expose an endpoint to upload images, it's not possible to upload images in the article. You'll have to upload them manually from Dev.to's interface.
+- If a file with the same name and path exists in the repository, an error is thrown. There's no support for updating files.
+
+### Dev.to Limitations
+
+- As Dev.to does not expose an endpoint to upload images, it's not possible to upload images in the article. Images are added as they are in Notion, which may or may not work as expected. You'll have to upload them manually from Dev.to's interface.
+
+### Hashnode Limitations
+
+- Hashnode's API does not provide the option to post an article as a draft. As an alternative, the `should_hide` will allow you to hide the article from Hashnode's public feed. It will still, however, show up on your blog.
+- As Hashnode does not expose an endpoint to upload images, it's not possible to upload images in the article. Images are added as they are in Notion, which may or may not work as expected. You'll have to upload them manually from Hashnode's interface.

@@ -37,6 +37,14 @@
           
         }
       }
+    },
+    "hashnode": {
+      "options": {
+        "should_hide": true,
+        "properties": {
+          
+        }
+      }
     }
   }
 }

@@ -28,8 +28,6 @@ class GitHubClient {
     }
     this.options = config.options
     this.notion = new Notion(notion_config)
-
-    // console.log(this.options, this.connection_settings)
   }
 
   async post(url: string) {
