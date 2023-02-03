@@ -34,15 +34,25 @@
       "options": {
         "should_publish": false,
         "properties": {
-          
+          "title": "Title for Dev.to"
         }
       }
     },
     "hashnode": {
       "options": {
-        "should_hide": true,
+        "should_publish": true,
+        "should_notify_followers": false,
         "properties": {
-          
+          "title": "Title for Hashnode"
+        }
+      }
+    },
+    "medium": {
+      "options": {
+        "should_publish": false,
+        "should_notify_followers": false,
+        "properties": {
+          "title": "Title for Medium"
         }
       }
     }

@@ -33,11 +33,11 @@ class DevToClient {
 
     //transform blocks to markdown
     let markdown = await this.notion.getMarkdown(blocks)
+    const properties = await this.notion.getArticleProperties(pageId)
+    
     //format frontmatter
     let frontmatter = '---\r\n'
     frontmatter += `published: ${this.options.should_publish}\r\n`
-
-    const properties = await this.notion.getArticleProperties(pageId)
     Object.entries(DevToProperties).map(([, value]) => {
       const propertyName = this.options.properties && this.options.properties[value] ? 
         this.options.properties[value] :

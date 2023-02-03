@@ -24,6 +24,12 @@
         "token": "HASHNODE_TOKEN",
         "publication_id": "HASHNODE_PUB_ID"
       }
+    },
+    "medium": {
+      "connection_settings": {
+        "token": "MEDIUM_TOKEN",
+        "publication_name": "MEDIUM_PUB_NAME"
+      }
     }
   }
 }

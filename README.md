@@ -8,7 +8,7 @@ This tool allows posting from Notion to different platforms.
   - [x] frontmatter customization
 - [x] Dev.to
 - [x] Hashnode
-- [ ] Medium
+- [x] Medium
 
 ## Environment Variables
 
@@ -32,6 +32,11 @@ This tool allows posting from Notion to different platforms.
 
 - `HASHNODE_TOKEN`: (required) Hashnode personal token
 - `HASHNODE_PUB_ID`: The ID of the publication to publish the article under. You can retrieve it either from the publication's dashboard page, where the ID is the  second part of the URL (`https://hashnode.com/PUB_ID/dashboard`).
+
+### Medium
+
+- `MEDIUM_TOKEN`: (required) Medium Integration Token. Can be retrieved from [here](https://medium.com/me/settings/security).
+- `MEDIUM_PUB_NAME`: The name of the Medium publication. Must be the exact name as it is on Medium.
 
 ## Usage
 
@@ -100,9 +105,19 @@ The JSON configuration file can have the following fields:
     },
     "hashnode": {
       "options": {
-        "should_hide": true,
+        "should_publish": true,
+        "should_notify_followers": false,
         "properties": {
           "title": "Title for Hashnode"
+        }
+      }
+    },
+    "medium": {
+      "options": {
+        "should_publish": false,
+        "should_notify_followers": false,
+        "properties": {
+          "title": "Title for Medium"
         }
       }
     }
@@ -143,6 +158,13 @@ Where:
     - `original_article_url` (refers to the property holding the canonical url of the article)
     - `tags` (the property's value in Notion should be a list of tag names separated by a comma. The tag name can either be tag slug or display name)
     - `subtitle`
+- `medium`: A JSON object with all the configurations related to Medium. These are:
+  - `should_publish`: A boolean value indicating whether the article should be created in dev.to as a draft or it should be published.
+  - `should_notify_followers`: A boolean value indicating whether your followers should be notified about the article.
+  - `properties`: A JSON object that allows you to override the name of the properties in Notion to pull the values of frontmatter fields. You can set the following properties:
+    - `title`
+    - `tags` (the property's value in Notion should be a list of tag names separated by a comma.)
+    - `canonical_url`
 
 ### Environment Variables when Loading Configurations from a Custom File
 
@@ -171,6 +193,18 @@ When you're loading configurations from a custom file using the `-c, --config` o
         "api_key": "...",
         "organization_id": "..."
       }
+    },
+    "hashnode": {
+      "connection_settings": {
+        "token": "...",
+        "publication_id": "..."
+      }
+    },
+    "medium": {
+      "connection_settings": {
+        "token": "...",
+        "publication_name": "..."
+      }
     }
   }
 }
@@ -189,4 +223,3 @@ When you're loading configurations from a custom file using the `-c, --config` o
 ### Hashnode Limitations
 
 - Hashnode's API does not provide the option to post an article as a draft. As an alternative, the `should_hide` will allow you to hide the article from Hashnode's public feed. It will still, however, show up on your blog.
-- As Hashnode does not expose an endpoint to upload images, it's not possible to upload images in the article. Images are added as they are in Notion, which may or may not work as expected. You'll have to upload them manually from Hashnode's interface.

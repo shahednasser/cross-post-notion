@@ -1,3 +1,4 @@
+import { MediumConnectionSettings, MediumOptions } from './clients/medium';
 import { HashnodeConnectionSettings, HashnodeOptions } from './clients/hashnode';
 import { NotionConnectionSettings, NotionOptions } from './clients/notion';
 import { GitHubConnectionSettings, GitHubOptions } from "./clients/github"
@@ -23,11 +24,17 @@ export type ConfigHashnode = {
   options: HashnodeOptions
 }
 
+export type ConfigMedium = {
+  connection_settings: MediumConnectionSettings,
+  options: MediumOptions
+}
+
 type Config = {
   github: ConfigGitHub,
   notion: ConfigNotion,
   devto: ConfigDevTo,
-  hashnode: ConfigHashnode
+  hashnode: ConfigHashnode,
+  medium: ConfigMedium
 }
 
 export default Config
