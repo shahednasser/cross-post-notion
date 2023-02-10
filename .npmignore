@@ -1,0 +1,5 @@
+config/local.json,
+config/local-2.json
+src
+node_modules
+.env.template

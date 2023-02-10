@@ -2,7 +2,31 @@
 
 This tool allows posting from Notion to different platforms.
 
-## Platforms
+- [Cross Post Tool for Notion](#cross-post-tool-for-notion)
+  - [Supported Platforms](#supported-platforms)
+  - [Environment Variables](#environment-variables)
+    - [Notion](#notion)
+    - [GitHub](#github)
+    - [Dev.to](#devto)
+    - [Hashnode](#hashnode)
+    - [Medium](#medium)
+  - [Installation](#installation)
+    - [NPX Command](#npx-command)
+    - [CLI Tool](#cli-tool)
+    - [GitHub Repository](#github-repository)
+  - [Usage](#usage)
+    - [Post Command](#post-command)
+      - [Options](#options)
+        - [Platforms](#platforms)
+  - [Config](#config)
+    - [Available Configurations](#available-configurations)
+    - [Environment Variables when Loading Configurations from a Custom File](#environment-variables-when-loading-configurations-from-a-custom-file)
+  - [Limitations](#limitations)
+    - [GitHub Limitations](#github-limitations)
+    - [Dev.to Limitations](#devto-limitations)
+    - [Hashnode Limitations](#hashnode-limitations)
+
+## Supported Platforms
 
 - [x] GitHub (Markdown)
   - [x] frontmatter customization
@@ -38,19 +62,62 @@ This tool allows posting from Notion to different platforms.
 - `MEDIUM_TOKEN`: (required) Medium Integration Token. Can be retrieved from [here](https://medium.com/me/settings/security).
 - `MEDIUM_PUB_NAME`: The name of the Medium publication. Must be the exact name as it is on Medium.
 
-## Usage
+## Installation
 
-Run the following command after clonning the repository:
+### NPX Command
+
+You can use this command as an NPX command:
 
 ```bash
-yarn start <url>
+npx cross-post-notion
+```
+
+### CLI Tool
+
+You can install this as a global CLI tool:
+
+```bash
+# using npm
+npm install -g cross-post-notion
+
+# using yarn
+yarn add cross-post-notion global
+```
+
+### GitHub Repository
+
+You can clone this repository, then run the following command after installing the dependencies:
+
+```bash
+# using npm
+npm start
+
+# using yarn
+yarn start
+```
+
+## Usage
+
+### Post Command
+
+To cross-post an article from Notion to other platforms, use the `post` command:
+
+```bash
+# using npx
+npx cross-post-notion <url>
+
+# using CLI tool
+cross-post-notion <url>
+
+# using cloned repository
+npm start post <url>
 ```
 
 Where `<url>` is the URL of the Notion document.
 
-### Options
+#### Options
 
-#### Platforms
+##### Platforms
 
 By default, the article will be published to github, devto, hashnode, and medium.
 

@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "",
   "main": "dist/index.js",
+  "bin": "dist/index.js",
   "private": false,
   "scripts": {
     "start": "ts-node src/index.ts",
@@ -10,7 +11,8 @@
     "build": "tsc",
     "format": "prettier --write src/**/*.ts",
     "lint": "eslint src",
-    "production:start": "NODE_APP_INSTANCE=2 npm run start"
+    "production:start": "NODE_APP_INSTANCE=2 npm run start",
+    "prepublish": "npm run build"
   },
   "keywords": [],
   "author": "",
