@@ -48,6 +48,27 @@ yarn start <url>
 
 Where `<url>` is the URL of the Notion document.
 
+### Options
+
+#### Platforms
+
+By default, the article will be published to github, devto, hashnode, and medium.
+
+You can specify which platforms to publish the article on using the `-p, --platforms` option. For example:
+
+```bash
+yarn start example.com -p devto hashnode
+```
+
+This will publish the article only on dev.to and hashnode.
+
+Allowed values are:
+
+- `github`
+- `devto`
+- `hashnode`
+- `medium`
+
 ## Config
 
 By default, this tool will look for configurations under `config/default.json` or `config/local.json`. You can also pass the `-c, --config` option to load configurations from a different JSON file.
