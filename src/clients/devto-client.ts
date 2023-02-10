@@ -3,6 +3,18 @@ import { DevToConnectionSettings, DevToOptions, DevToProperties } from "../types
 import Notion from "./notion-client";
 import axios, { AxiosInstance } from 'axios';
 
+type ArticleData = {
+  body_markdown: string,
+  organization_id?: string,
+  published: boolean,
+  title: string,
+  series?: string,
+  description?: string,
+  canonical_url?: string,
+  tags?: string[],
+  date?: string
+}
+
 class DevToClient {
   connection_settings: DevToConnectionSettings
   options: DevToOptions
@@ -32,31 +44,42 @@ class DevToClient {
     const blocks = await this.notion.getBlocks(url)
 
     //transform blocks to markdown
-    let markdown = await this.notion.getMarkdown(blocks)
+    const markdown = await this.notion.getMarkdown(blocks)
     const properties = await this.notion.getArticleProperties(pageId)
     
-    //format frontmatter
-    let frontmatter = '---\r\n'
-    frontmatter += `published: ${this.options.should_publish}\r\n`
-    Object.entries(DevToProperties).map(([, value]) => {
+    //format data
+    const article: ArticleData = {
+      body_markdown: markdown,
+      organization_id: this.connection_settings.organization_id,
+      published: this.options.should_publish,
+      title: ''
+    }
+    Object.entries(DevToProperties).forEach(([, value]) => {
       const propertyName = this.options.properties && this.options.properties[value] ? 
         this.options.properties[value] :
         value
-      frontmatter += `${value}: ${this.notion.getAttributeValue(properties[propertyName])}\r\n`
+      const attributeValue = this.notion.getAttributeValue(properties[propertyName])
+      if (!attributeValue.length) {
+        return
+      }
+      article[value] = this.formatValue(value, attributeValue)
     })
-
-    frontmatter += '---\r\n'
-    markdown = frontmatter + markdown
 
     //push to dev.to
     await this.client.post('articles', {
-      article: {
-        body_markdown: markdown,
-        organization_id: this.connection_settings.organization_id
-      }
+      article
     })
 
     console.log('Article pushed to Dev.to')
+  }
+
+  formatValue (name: string, value: string): any {
+    switch (name) {
+      case 'tags':
+        return value.split(',')
+      default:
+        return value
+    }
   }
 }
 

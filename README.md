@@ -147,7 +147,7 @@ Where:
     - `title`
     - `date`
     - `description`
-    - `tags` (the property's value in Notion can either be a space separated list or a comma separated list. Each tag should start with `#`.)
+    - `tags` (the property's value in Notion should be a comma separated list.)
     - `series` (the property's value in Notion should be the name of the series)
     - `canonical_url`
     - `description`
@@ -223,3 +223,4 @@ When you're loading configurations from a custom file using the `-c, --config` o
 ### Hashnode Limitations
 
 - Hashnode's API does not provide the option to post an article as a draft. As an alternative, the `should_hide` will allow you to hide the article from Hashnode's public feed. It will still, however, show up on your blog.
+- Due to a limitation in Hashnode's APIs, it's not possible to map all available categories. So, some categories you use in Notion will not show up when you cross-post to Hashnode.

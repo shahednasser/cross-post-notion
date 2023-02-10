@@ -6,6 +6,7 @@ import axios from "axios"
 import imageTypes from "../utils/image-types"
 import { nanoid } from 'nanoid'
 import { ConfigGitHub, ConfigNotion } from '../types/config';
+import formatFrontmatterValue from "../utils/format-frontmatter-value"
 
 const MARKDOWN_IMG_REGEX = /!\[[^\]]*\]\((.*?)\s*("(?:.*[^"])")?\s*\)/
 
@@ -89,7 +90,7 @@ class GitHubClient {
           && properties[this.options.extra_frontmatter_mapper[key]]) ?
           this.notion.getAttributeValue(properties[this.options.extra_frontmatter_mapper[key]]) || value :
           value
-        frontmatterStr += `${key}: ${this.formatFrontmatterValue(frontmatterValue)}\r\n`
+        frontmatterStr += `${key}: ${formatFrontmatterValue(frontmatterValue)}\r\n`
       }
     }
 
@@ -156,15 +157,6 @@ class GitHubClient {
 
   toBase64(source: string): string {
     return Buffer.from(source).toString('base64')
-  }
-
-  formatFrontmatterValue (value: any) {
-    switch (typeof value) {
-      case 'string':
-        return `'${value.replaceAll(/'/g, '')}'`
-      default:
-        return value
-    }
   }
 }
 
