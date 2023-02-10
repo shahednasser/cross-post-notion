@@ -216,6 +216,9 @@ The JSON configuration file can have the following fields:
 Where:
 
 - `config`: wraps all configurations.
+- `notion`: A JSON object with all configurations related to Notion. These are:
+  - `options`: Include all options related to cross posting:
+    - `skip_block_types`: An array of block types that should be skipped from the Notion document. For example, `toggle` would skip all toggle list blocks in the Notion document.
 - `github`: A JSON object with all configurations related to GitHub. These are:
   - `options`: Include all options related to cross posting:
     - `image_path`: The path in the repository to upload images to.
