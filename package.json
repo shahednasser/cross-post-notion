@@ -12,7 +12,7 @@
     "format": "prettier --write src/**/*.ts",
     "lint": "eslint src",
     "production:start": "NODE_APP_INSTANCE=2 npm run start",
-    "prepublish": "NODE_ENV=production npm run build"
+    "prepublish": "npm run build"
   },
   "keywords": [],
   "author": "",
