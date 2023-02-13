@@ -1,11 +1,17 @@
 #!/usr/bin/env node
 import dotenv from "dotenv"
 import fs from "fs"
+import path from "path";
 
 //config must be loaded before importing
 //any file that imports `config`
 dotenv.config()
 
+process.env.SUPPRESS_NO_CONFIG_WARNING = 'y';
+
+if (process.env.NODE_ENV === 'production') {
+  process.env["NODE_CONFIG_DIR"] = __dirname + "/config/" + path.delimiter + './config/';
+}
 import config from 'config';
 import post from "./commands/post"
 import { program } from 'commander'
