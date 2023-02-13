@@ -8,7 +8,7 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "typecheck": "tsc --noEmit",
-    "build": "tsc",
+    "build": "tsc && mkdir dist/config && cp config/default.json dist/config/default.json && cp config/custom-environment-variables.json dist/config/custom-environment-variables.json",
     "format": "prettier --write src/**/*.ts",
     "lint": "eslint src",
     "production:start": "NODE_APP_INSTANCE=2 npm run start",
