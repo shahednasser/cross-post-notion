@@ -10,6 +10,7 @@ dotenv.config()
 process.env.SUPPRESS_NO_CONFIG_WARNING = 'y';
 
 if (process.env.NODE_ENV === 'production') {
+  console.log(__dirname + "/config/" + path.delimiter + './config/')
   process.env["NODE_CONFIG_DIR"] = __dirname + "/config/" + path.delimiter + './config/';
 }
 import config from 'config';
