@@ -55,7 +55,7 @@ This tool allows posting from Notion to different platforms.
 ### Hashnode
 
 - `HASHNODE_TOKEN`: (required) Hashnode personal token
-- `HASHNODE_PUB_ID`: The ID of the publication to publish the article under. You can retrieve it either from the publication's dashboard page, where the ID is the  second part of the URL (`https://hashnode.com/PUB_ID/dashboard`).
+- `HASHNODE_PUB_ID`: (required) The ID of the publication to publish the article under. You can retrieve it either from the publication's dashboard page, where the ID is the  second part of the URL (`https://hashnode.com/PUB_ID/dashboard`).
 
 ### Medium
 
@@ -319,3 +319,20 @@ When you're loading configurations from a custom file using the `-c, --config` o
 
 - Hashnode's API does not provide the option to post an article as a draft. As an alternative, the `should_hide` will allow you to hide the article from Hashnode's public feed. It will still, however, show up on your blog.
 - Due to a limitation in Hashnode's APIs, it's not possible to map all available categories. So, some categories you use in Notion will not show up when you cross-post to Hashnode.
+
+## FAQ & Troubleshooting
+
+### How do I obtain the URL of the Notion document?
+
+To retrieve the URL of a Notion document:
+
+1. In the document, click on Share at the top right.
+2. Click on Copy Link at the bottom right of the pop up.
+
+The URL should be of the format `https://www.notion.so/{workspace}/{path}`.
+
+### I get the error "No matches found: URL"
+
+When you copy the URL from Notion, sometimes it has a query parameter at the end of it such as `?psv=4`. Some terminals can't read that.
+
+Make sure to remove any query parameters and try again.

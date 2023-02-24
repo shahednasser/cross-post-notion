@@ -40,9 +40,6 @@ class HashnodeClient {
     const markdown = await this.notion.getMarkdown(blocks)
     const properties = await this.notion.getArticleProperties(pageId)
 
-    let mutation: string
-    let data: Record<string, any>
-
     const canonical_url = this.notion.getAttributeValue(properties[this.options.properties?.original_article_url || HashnodeProperties.ORIGINAL_ARTICLE_URL])
 
     //get tags
@@ -61,40 +58,27 @@ class HashnodeClient {
           originalArticleUrl: canonical_url
         }
       }),
-      tags
+      tags,
+      isPartOfPublication: {
+        publicationId: this.connection_settings.publication_id
+      }
     }
 
 
-    if (this.connection_settings.publication_id) {
-      //post to publication
-      mutation = gql`
-        mutation createPublicationStory($input: CreateStoryInput!, $publicationId: String!, $hideFromHashnodeFeed: Boolean!) {
-          createPublicationStory(input: $input, publicationId: $publicationId, hideFromHashnodeFeed: $hideFromHashnodeFeed) {
-            success,
-            message
-          }
+    //post to personal
+    const mutation = gql`
+      mutation createPublicationStory($input: CreateStoryInput!, $publicationId: String!, $hideFromHashnodeFeed: Boolean!) {
+        createPublicationStory(input: $input, publicationId: $publicationId, hideFromHashnodeFeed: $hideFromHashnodeFeed) {
+          success,
+          message
         }
-      `
-      
-      data = {
-        input: createStoryInput,
-        publicationId: this.connection_settings.publication_id,
-        hideFromHashnodeFeed: this.options.should_hide
       }
-    } else {
-      //post to personal
-      mutation = gql`
-        mutation createStory($input: CreateStoryInput!) {
-          createStory(input: $input) {
-            success,
-            message
-          }
-        }
-      `
-      
-      data = {
-        input: createStoryInput
-      }
+    `
+    
+    const data = {
+      input: createStoryInput,
+      publicationId: this.connection_settings.publication_id,
+      hideFromHashnodeFeed: this.options.should_hide
     }
 
     await this.client.request(mutation, data)
