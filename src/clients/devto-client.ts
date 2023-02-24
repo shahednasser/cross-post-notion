@@ -37,7 +37,7 @@ class DevToClient {
     })
   }
 
-  async post (url: string) {
+  async post (url: string, dryRun?: boolean) {
     //get page id
     const pageId = this.notion.getPageIdFromURL(url)
     //get blocks
@@ -64,6 +64,11 @@ class DevToClient {
       }
       article[value] = this.formatValue(value, attributeValue)
     })
+
+    if (dryRun) {
+      console.log('No error occurred while preparing article for dev.to.')
+      return
+    }
 
     //push to dev.to
     await this.client.post('articles', {

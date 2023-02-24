@@ -36,5 +36,10 @@ program
   .option(
     '-p, --platforms [platforms...]', 
     'Platforms to publish the article on.', Object.values(Platforms))
+  .option(
+    '-d, --dryRun',
+    'If this option is passed, the entire process runs without actually posting the article. Useful for testing.',
+    false
+  )
 
 program.parse()

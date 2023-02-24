@@ -25,7 +25,7 @@ class MediumClient {
     })
   }
 
-  async post (url: string) {
+  async post (url: string, dryRun?: boolean) {
      //get page id
      const pageId = this.notion.getPageIdFromURL(url)
      //get blocks
@@ -54,6 +54,11 @@ class MediumClient {
      const title = this.notion.getAttributeValue(properties[this.options.properties?.title || MediumProperties.TITLE])
      const subtitle = this.notion.getAttributeValue(properties[this.options.properties?.subtitle || MediumProperties.SUBTITLE])
      markdown = `# ${title}\r\n\r\n${subtitle ? `${subtitle}\r\n\r\n` : ''}${markdown}`
+
+     if (dryRun) {
+       console.log('No error occurred while preparing article for Medium.')
+       return
+     }
 
      await this.client.post(requestPath, {
       title,

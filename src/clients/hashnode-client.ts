@@ -30,7 +30,7 @@ class HashnodeClient {
     })
   }
 
-  async post (url: string) {
+  async post (url: string, dryRun?: boolean) {
     //get page id
     const pageId = this.notion.getPageIdFromURL(url)
     //get blocks
@@ -79,6 +79,11 @@ class HashnodeClient {
       input: createStoryInput,
       publicationId: this.connection_settings.publication_id,
       hideFromHashnodeFeed: this.options.should_hide
+    }
+
+    if (dryRun) {
+      console.log('No error occurred while preparing article for Hashnode.')
+      return
     }
 
     await this.client.request(mutation, data)

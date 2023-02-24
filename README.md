@@ -140,6 +140,14 @@ Allowed values are:
 - `hashnode`
 - `medium`
 
+##### Dry Run
+
+If you want to test out the entire flow without actually posting the article, you can pass the `-d, --dryRun` option:
+
+```bash
+yarn start example.com --dryRun
+```
+
 ## Config
 
 By default, this tool will look for configurations under `config/default.json` or `config/local.json`. You can also pass the `-c, --config` option to load configurations from a different JSON file.

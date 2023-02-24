@@ -31,7 +31,7 @@ class GitHubClient {
     this.notion = new Notion(notion_config)
   }
 
-  async post(url: string) {
+  async post(url: string, dryRun?: boolean) {
     //get page id
     const pageId = this.notion.getPageIdFromURL(url)
     //get blocks
@@ -114,6 +114,11 @@ class GitHubClient {
       path: `${this.options.article_path}/${slug}.md`,
       content: this.toBase64(markdown)
     })
+
+    if (dryRun) {
+      console.log('No error occurred while preparing article for GitHub.')
+      return
+    }
 
     //commit files to GitHub
     for (const file of files) {
