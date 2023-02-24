@@ -25,6 +25,10 @@ This tool allows posting from Notion to different platforms.
     - [GitHub Limitations](#github-limitations)
     - [Dev.to Limitations](#devto-limitations)
     - [Hashnode Limitations](#hashnode-limitations)
+  - [FAQ \& Troubleshooting](#faq--troubleshooting)
+    - [How do I obtain the URL of the Notion document?](#how-do-i-obtain-the-url-of-the-notion-document)
+    - [I get the error "No matches found: URL"](#i-get-the-error-no-matches-found-url)
+    - [NPX doesn't use latest version by default](#npx-doesnt-use-latest-version-by-default)
 
 ## Supported Platforms
 
@@ -336,3 +340,13 @@ The URL should be of the format `https://www.notion.so/{workspace}/{path}`.
 When you copy the URL from Notion, sometimes it has a query parameter at the end of it such as `?psv=4`. Some terminals can't read that.
 
 Make sure to remove any query parameters and try again.
+
+### NPX doesn't use latest version by default
+
+After the first time you use the command with NPX, it might not use updated versions moving forward.
+
+So, it's recommended to use `@latest` with your commands:
+
+```bash
+npx cross-post-notion@latest <url>
+```
