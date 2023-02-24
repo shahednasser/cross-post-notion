@@ -176,7 +176,10 @@ The JSON configuration file can have the following fields:
           "date": "date"
         },
         "extra_frontmatter": {
-          "excerpt": "this is description"
+          "excerpt": "this is description",
+          "nested": {
+            "field1": "value1"
+          }
         },
         "extra_frontmatter_mapper": {
           "excerpt": "Description"

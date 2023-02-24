@@ -6,7 +6,7 @@ import axios from "axios"
 import imageTypes from "../utils/image-types"
 import { nanoid } from 'nanoid'
 import { ConfigGitHub, ConfigNotion } from '../types/config';
-import formatFrontmatterValue from "../utils/format-frontmatter-value"
+import matter from 'gray-matter'
 
 const MARKDOWN_IMG_REGEX = /!\[[^\]]*\]\((.*?)\s*("(?:.*[^"])")?\s*\)/
 
@@ -66,21 +66,18 @@ class GitHubClient {
     const title = this.notion.getAttributeValue(properties[this.options.properties?.title || GitHubProperties.TITLE])
 
     //add frontmatter
-    let frontmatterStr = ''
-    if (this.options.add_default_frontmatter || this.options.extra_frontmatter) {
-      frontmatterStr = '---\r\n'
-    }
+    const frontmatterObject: Record<string, any> = {}
 
     if (this.options.add_default_frontmatter) {
       //add title
-      frontmatterStr += `${this.options.frontmatter_labels?.title || DefaultFrontmatter.TITLE}: '${title}'\r\n`
+      frontmatterObject[this.options.frontmatter_labels?.title || DefaultFrontmatter.TITLE] = title
       //add date
       if (this.options.properties?.date) {
-        frontmatterStr += `${this.options.frontmatter_labels?.date || DefaultFrontmatter.DATE}: '${this.notion.getAttributeValue(properties[this.options.properties?.date])}'\r\n`
+        frontmatterObject[this.options.frontmatter_labels?.date || DefaultFrontmatter.DATE] = this.notion.getAttributeValue(properties[this.options.properties?.date])
       } else {
         //use current date
         const today = new Date()
-        frontmatterStr += `${this.options.frontmatter_labels?.date || DefaultFrontmatter.DATE}: '${today.getFullYear()}-${today.getMonth()}-${today.getDate()}'\r\n`
+        frontmatterObject[this.options.frontmatter_labels?.date || DefaultFrontmatter.DATE] = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`
       }
     }
 
@@ -90,15 +87,11 @@ class GitHubClient {
           && properties[this.options.extra_frontmatter_mapper[key]]) ?
           this.notion.getAttributeValue(properties[this.options.extra_frontmatter_mapper[key]]) || value :
           value
-        frontmatterStr += `${key}: ${formatFrontmatterValue(frontmatterValue)}\r\n`
+        frontmatterObject[key] = frontmatterValue
       }
     }
 
-    if (this.options.add_default_frontmatter || this.options.extra_frontmatter) {
-      frontmatterStr += '---\r\n'
-    }
-
-    markdown = frontmatterStr + markdown
+    markdown = matter.stringify(markdown, frontmatterObject)
 
     // get slug of file
     let slug
