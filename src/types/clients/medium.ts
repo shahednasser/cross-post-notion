@@ -4,6 +4,7 @@ export const MediumProperties = {
   ...NotionProperties,
   TAGS: 'tags',
   CANONICAL_URL: 'canonical_url',
+  SUBTITLE: 'subtitle'
 } as const
 
 export type MediumPropertiesType = typeof MediumProperties[keyof typeof MediumProperties]

@@ -254,6 +254,7 @@ Where:
   - `should_notify_followers`: A boolean value indicating whether your followers should be notified about the article.
   - `properties`: A JSON object that allows you to override the name of the properties in Notion to pull the values of frontmatter fields. You can set the following properties:
     - `title`
+    - `subtitle`
     - `tags` (the property's value in Notion should be a list of tag names separated by a comma.)
     - `canonical_url`
 

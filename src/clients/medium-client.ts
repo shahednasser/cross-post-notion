@@ -52,7 +52,8 @@ class MediumClient {
 
      //get post title and add it to the top of the markdown content
      const title = this.notion.getAttributeValue(properties[this.options.properties?.title || MediumProperties.TITLE])
-     markdown = `# ${title}\r\n\r\n${markdown}`
+     const subtitle = this.notion.getAttributeValue(properties[this.options.properties?.subtitle || MediumProperties.SUBTITLE])
+     markdown = `# ${title}\r\n\r\n${subtitle ? `${subtitle}\r\n\r\n` : ''}${markdown}`
 
      await this.client.post(requestPath, {
       title,
