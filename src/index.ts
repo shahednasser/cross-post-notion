@@ -15,6 +15,7 @@ import { program } from 'commander'
 import { Platforms } from "./types/global-options";
 
 program.usage('[command] [options]')
+  .version('0.1.1', '-v, --version')
   .option('-c, --config <path>', 'Path to a JSON config file. By default, config files are loaded from config/default.json')
   .hook('preAction', (thisCommand, actionCommand) => {
     const configOption = thisCommand.opts().config
