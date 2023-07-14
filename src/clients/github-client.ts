@@ -48,7 +48,7 @@ class GitHubClient {
           if (imageDataUrl) {
             const filename = `${nanoid(10)}.${imageDataUrl.ext}`
             files.push({
-              path: `${this.options.image_path}/${filename}`,
+              path: `${this.options.image_path ? `${this.options.image_path}/` : ''}${filename}`,
               content: imageDataUrl.url
             })
 
@@ -111,7 +111,7 @@ class GitHubClient {
 
     //add markdown file to files
     files.push({
-      path: `${this.options.article_path}/${slug}.md`,
+      path: `${this.options.article_path ? `${this.options.article_path}/` : ''}${slug}.md`,
       content: this.toBase64(markdown)
     })
 
