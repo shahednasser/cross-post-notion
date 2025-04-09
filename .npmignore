@@ -1,4 +1,4 @@
 config/*
 src
 node_modules
-.env.template
+.env.*
